@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -127,6 +128,7 @@ public class CsvUtils {
 		private Function<CsvLine, T> mapper;
 		private Character delimiter = DEFAULT_DELIMITER;
 		private String lineSeparator = DEFAULT_LINE_SEPARATOR;
+		private Predicate<String> csvLineFilter = e -> true;
 		
 		public CsvUtilsReader<T> delimeter(char theDelimiter) {
 			delimiter = theDelimiter;
@@ -150,15 +152,20 @@ public class CsvUtils {
 			this.content = theContent;
 			return this;
 		}
+		public CsvUtilsReader<T> content(File file) throws FileNotFoundException, IOException {
+			return content(FileUtils.read(file).trim());
+		}
 		
 		public CsvUtilsReader<T> mapper(Function<CsvLine, T> theMapper) {
 			mapper = theMapper;
 			return this;
 		}
-		
-		public CsvUtilsReader<T> content(File file) throws FileNotFoundException, IOException {
-			return content(FileUtils.read(file).trim());
+		public CsvUtilsReader<T> csvLineFilter(Predicate<String> filter) {
+			if (filter != null)
+				csvLineFilter = filter;
+			return this;
 		}
+		
 		
 		public List<T> read() {
 			if (StringUtils.isEmpty(lineSeparator))
@@ -173,26 +180,19 @@ public class CsvUtils {
 									.map(CsvLine::new)
 									.collect(Collectors.toList());
 			
-			if (!includeFirstLine) {
-				lines.remove(0);
-			}
-			if (!includeLastLine) {
-				lines.remove(lines.size() - 1);
-			}
-			
 			return lines.stream()
 				.map(mapper::apply)
 				.collect(Collectors.toList());
 		}
 		
 		private List<String> splitLines() {
-			List<String> list = Stream.of(content.split(lineSeparator)).collect(Collectors.toList());
+			List<String> lines = Stream.of(content.split(lineSeparator)).collect(Collectors.toList());
 			
 			boolean flagReDo;
 			
 			do {
 				flagReDo = false;
-				for (ListIterator<String> i = list.listIterator(); i.hasNext();) {
+				for (ListIterator<String> i = lines.listIterator(); i.hasNext();) {
 					String line = i.next();
 					if (StringUtils.count(line, DOUBLE_QUOTE) % 2 == 1) {
 						i.remove();
@@ -205,7 +205,17 @@ public class CsvUtils {
 				}
 			} while (flagReDo);
 			
-			return list;
+			
+			if (!includeFirstLine) {
+				lines.remove(0);
+			}
+			if (!includeLastLine) {
+				lines.remove(lines.size() - 1);
+			}
+			
+			return lines.stream()
+						.filter(csvLineFilter)
+						.collect(Collectors.toList());
 		}
 		
 		private List<String> splitCells(String line) {
