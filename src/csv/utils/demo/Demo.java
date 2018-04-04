@@ -60,6 +60,8 @@ public class Demo {
 						line.get(0),
 						Item.parsePrice(line.get(1)))
 						)
+				// if you want filter the lines before start parsing, so only the lines that passes the filter will be parsed
+//				.csvLineFilter(line -> line.startsWith("riz"))
 				// finally we call read() to parse the file (or the content)
 				.read();
 
