@@ -178,15 +178,12 @@ public class CsvUtils {
 			if (mapper == null)
 				throw new IllegalArgumentException("line reader cannot be null");
 			
-			List<CsvLine> lines = splitLines()
-									.stream()
-									.map(this::splitCells)
-									.map(CsvLine::new)
-									.collect(Collectors.toList());
-			
-			return lines.stream()
-				.map(mapper::apply)
-				.collect(Collectors.toList());
+			return splitLines()
+					.stream()
+					.map(this::splitCells)
+					.map(CsvLine::new)
+					.map(mapper::apply)
+					.collect(Collectors.toList());
 		}
 		
 		private List<String> splitLines() {
