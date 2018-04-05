@@ -3,6 +3,8 @@ package csv.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -153,9 +155,11 @@ public class CsvUtils {
 			return this;
 		}
 		public CsvUtilsReader<T> content(File file) throws FileNotFoundException, IOException {
-			return content(FileUtils.read(file).trim());
+			return content(file.toPath());
 		}
-		
+		public CsvUtilsReader<T> content(Path path) throws IOException {
+			return content(new String(Files.readAllBytes(path)));
+		}
 		public CsvUtilsReader<T> mapper(Function<CsvLine, T> theMapper) {
 			mapper = theMapper;
 			return this;
@@ -277,4 +281,3 @@ public class CsvUtils {
 	}
 	
 }
-
