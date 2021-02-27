@@ -1,4 +1,4 @@
-package csv.utils;
+package com.ife.csv.lib;
 
 import java.util.Collection;
 
