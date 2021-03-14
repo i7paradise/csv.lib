@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 public interface CsvReader<T> {
 
-    CsvReader<T> delimeter(char theDelimiter);
+    CsvReader<T> separator(char theSeparator);
 
     CsvReader<T> lineSeparator(String theLineSeparator);
 

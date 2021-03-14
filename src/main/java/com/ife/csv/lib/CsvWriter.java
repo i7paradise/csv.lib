@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public interface CsvWriter<T> {
     
-	CsvWriter<T> delimeter(char theDelimiter);
+	CsvWriter<T> separator(char theDelimiter);
 	
 	CsvWriter<T> lineSeparator(String theLineSeparator);
 	
@@ -17,7 +17,7 @@ public interface CsvWriter<T> {
 	
 	CsvWriter<T> footer(List<String> theFooter);
 	
-	CsvWriter<T> mapper(Function<T, List<String>> theMapper);
+	CsvWriter<T> mapper(Function<T, List<Object>> theMapper);
 	
 	String generate();
 }

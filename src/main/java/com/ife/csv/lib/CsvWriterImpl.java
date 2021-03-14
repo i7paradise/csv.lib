@@ -11,8 +11,8 @@ class CsvWriterImpl<T> implements CsvWriter<T> {
 	private final Collection<T> content;
 	private List<String> header;
 	private List<String> footer;
-	private Function<T, List<String>> mapper;
-	private Character delimiter = CsvUtils.DEFAULT_DELIMITER;
+	private Function<T, List<Object>> mapper;
+	private Character delimiter = CsvUtils.DEFAULT_SEPARATOR;
 	private String lineSeparator = CsvUtils.DEFAULT_LINE_SEPARATOR;
 
 	CsvWriterImpl(Collection<T> content) {
@@ -20,7 +20,7 @@ class CsvWriterImpl<T> implements CsvWriter<T> {
 	}
 
 	@Override
-	public CsvWriterImpl<T> delimeter(char theDelimiter) {
+	public CsvWriterImpl<T> separator(char theDelimiter) {
 		delimiter = theDelimiter;
 		return this;
 	}
@@ -54,7 +54,7 @@ class CsvWriterImpl<T> implements CsvWriter<T> {
 	}
 
 	@Override
-	public CsvWriterImpl<T> mapper(Function<T, List<String>> theMapper) {
+	public CsvWriterImpl<T> mapper(Function<T, List<Object>> theMapper) {
 		mapper = theMapper;
 		return this;
 	}
@@ -68,18 +68,29 @@ class CsvWriterImpl<T> implements CsvWriter<T> {
 		if (mapper == null)
 			throw new IllegalArgumentException("mapper cannot be null");
 
-		return Stream.of(csvLine(header), contentToCsvLines(), csvLine(footer)).filter(StringUtils::isNotEmpty)
+		return Stream.of(csvLine(header), contentToCsvLines(), csvLine(footer))
+				.filter(StringUtils::isNotEmpty)
 				.collect(Collectors.joining(lineSeparator));
 	}
 
-	private String csvLine(List<String> content) {
-		return CollectionUtils.isEmpty(content) ? CsvUtils.EMPTY
-				: content.stream().map(this::csvCell).collect(Collectors.joining(delimiter.toString()));
+	private String csvLine(List<?> content) {
+		if (CollectionUtils.isEmpty(content)) {
+			return CsvUtils.EMPTY;
+		}
+		return content.stream()
+				.map(Object::toString)
+				.map(this::csvCell)
+				.collect(Collectors.joining(delimiter.toString()));
 	}
 
 	private String contentToCsvLines() {
-		return content == null ? CsvUtils.EMPTY
-				: content.stream().map(mapper::apply).map(this::csvLine).collect(Collectors.joining(lineSeparator));
+		if (content == null) {
+			return CsvUtils.EMPTY;
+		}
+		return content.stream()
+				.map(mapper)
+				.map(this::csvLine)
+				.collect(Collectors.joining(lineSeparator));
 	}
 
 	private String csvCell(String string) {

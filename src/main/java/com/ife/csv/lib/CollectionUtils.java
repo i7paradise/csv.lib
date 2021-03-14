@@ -18,13 +18,4 @@ class CollectionUtils {
 		return collection == null || collection.isEmpty();
 	}
 
-	/**
-	 * check is the collection is neither <code>null</code> or empty
-	 * @param collection
-	 * @return <code>true</code> if not empty, <code>false</code> otherwise
-	 */
-	static boolean isNotEmpty(Collection<?> collection) {
-		return !isEmpty(collection);
-	}
-	
 }

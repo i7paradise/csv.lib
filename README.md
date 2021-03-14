@@ -8,7 +8,7 @@ Jdk 8
 
 ## Example
 
-in the both examples, we'll be using this POJO class
+Both write/read examples based on the *Item* POJO class
 
 ```
 public class Item {
@@ -36,7 +36,7 @@ String csvContent = CsvUtils.writer(Item.class)
                             .content(items)
                             .mapper(e -> Arrays.asList(
                                 e.getName(),
-                                e.getPrice()+""
+                                e.getPrice()
                                 ))
                             .header("item name", "price")
                             .footer("total", totalPrice+"")
