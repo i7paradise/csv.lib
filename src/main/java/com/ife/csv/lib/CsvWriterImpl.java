@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 class CsvWriterImpl<T> implements CsvWriter<T> {
 
 	private final Collection<T> content;
-	private List<String> header;
-	private List<String> footer;
+	private List<Object> header;
+	private List<Object> footer;
 	private Function<T, List<Object>> mapper;
 	private Character delimiter = CsvUtils.DEFAULT_SEPARATOR;
 	private String lineSeparator = CsvUtils.DEFAULT_LINE_SEPARATOR;
@@ -32,23 +32,23 @@ class CsvWriterImpl<T> implements CsvWriter<T> {
 	}
 
 	@Override
-	public CsvWriterImpl<T> header(String... theHeader) {
+	public CsvWriterImpl<T> header(Object... theHeader) {
 		return header(Stream.of(theHeader).collect(Collectors.toList()));
 	}
 
 	@Override
-	public CsvWriterImpl<T> header(List<String> theHeader) {
+	public CsvWriterImpl<T> header(List<Object> theHeader) {
 		header = theHeader;
 		return this;
 	}
 
 	@Override
-	public CsvWriterImpl<T> footer(String... theFooter) {
+	public CsvWriterImpl<T> footer(Object... theFooter) {
 		return footer(Stream.of(theFooter).collect(Collectors.toList()));
 	}
 
 	@Override
-	public CsvWriterImpl<T> footer(List<String> theFooter) {
+	public CsvWriterImpl<T> footer(List<Object> theFooter) {
 		footer = theFooter;
 		return this;
 	}

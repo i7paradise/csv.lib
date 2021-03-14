@@ -32,7 +32,7 @@ public class CsvUtilsTest {
 				// mapper that will map the POJO instance to csv strings
 				.mapper(e -> Arrays.asList(e.getName(), e.getPrice()))
 				// footer line if you want
-				.footer("Total", String.valueOf(total))
+				.footer("Total", total)
 				// finally call generate() to give you csv content as a String
 				.generate();
 

@@ -9,13 +9,13 @@ public interface CsvWriter<T> {
 	
 	CsvWriter<T> lineSeparator(String theLineSeparator);
 	
-	CsvWriter<T> header(String... theHeader);
+	CsvWriter<T> header(Object... theHeader);
 	
-	CsvWriter<T> header(List<String> theHeader);
+	CsvWriter<T> header(List<Object> theHeader);
 	
-	CsvWriter<T> footer(String... theFooter);
+	CsvWriter<T> footer(Object... theFooter);
 	
-	CsvWriter<T> footer(List<String> theFooter);
+	CsvWriter<T> footer(List<Object> theFooter);
 	
 	CsvWriter<T> mapper(Function<T, List<Object>> theMapper);
 	
